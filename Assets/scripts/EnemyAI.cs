@@ -4,19 +4,34 @@ using UnityEngine;
 using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
-    public Transform targetPoint;
+   public List<Transform> patrolPoints;
+    
+   private NavMeshAgent _navMeshAgent;
 
-    private NavMeshAgent _navMeshAgent;
+     private void Start()
+    {
+        InitComponentLinks();
+        PickNewPatrolPoint();
+    }
 
-    // Start is called before the first frame update
-    void Start()
+    private void InitComponentLinks()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
+    private void Update()
+   {
+    PatrolUpdate();
+   }
 
-    // Update is called once per frame
-    void Update()
+    private void PatrolUpdate() 
+    { 
+    if (_navMeshAgent.remainingDistance == 0 )
+        {
+            PickNewPatrolPoint();
+        }
+    }
+    private void PickNewPatrolPoint()
     {
-        _navMeshAgent.destination = targetPoint.position;
+        _navMeshAgent.destination = patrolPoints[Random.Range(0, patrolPoints.Count)].position;
     }
 }
