@@ -1,14 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
    public List<Transform> patrolPoints;
-    
-   private NavMeshAgent _navMeshAgent;
+    public PlayerController player;
+    public float viewAngle;
 
-     private void Start()
+
+    private NavMeshAgent _navMeshAgent;
+    private bool _isPlayerNoticed;
+    
+    private void Start()
     {
         InitComponentLinks();
         PickNewPatrolPoint();
@@ -16,11 +21,41 @@ public class EnemyAI : MonoBehaviour
 
     private void InitComponentLinks()
     {
+        
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
     private void Update()
    {
-    PatrolUpdate();
+        var direction = player.transform.position - transform.position;
+        if (Vector3.Angle(transform.forward, direction) < viewAngle)
+        {
+
+        
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position + Vector3.up, direction, out hit))
+        {
+            if (hit.collider.gameObject == player.gameObject)
+            {
+                _isPlayerNoticed = true;
+            }
+            else
+            {
+                _isPlayerNoticed = false;
+            }
+           
+        }
+        else
+        {
+            _isPlayerNoticed = false;
+        }
+
+        }
+        else
+        {
+            _isPlayerNoticed = false;
+        }
+        PatrolUpdate();
    }
 
     private void PatrolUpdate() 
