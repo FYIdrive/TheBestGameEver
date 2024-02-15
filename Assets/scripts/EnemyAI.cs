@@ -25,38 +25,26 @@ public class EnemyAI : MonoBehaviour
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
     private void Update()
-   {
-        var direction = player.transform.position - transform.position;
+    {
+        NoticePlayerUpdate();
+        PatrolUpdate();
+    }
+    private void NoticePlayerUpdate()
+    {
+      var direction = player.transform.position - transform.position;
+     _isPlayerNoticed = false;
         if (Vector3.Angle(transform.forward, direction) < viewAngle)
         {
-
-        
-
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position + Vector3.up, direction, out hit))
-        {
-            if (hit.collider.gameObject == player.gameObject)
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position + Vector3.up, direction, out hit))
             {
-                _isPlayerNoticed = true;
+                if (hit.collider.gameObject == player.gameObject)
+                {
+                    _isPlayerNoticed = true;
+                }
             }
-            else
-            {
-                _isPlayerNoticed = false;
-            }
-           
-        }
-        else
-        {
-            _isPlayerNoticed = false;
-        }
-
-        }
-        else
-        {
-            _isPlayerNoticed = false;
-        }
-        PatrolUpdate();
-   }
+        }    
+    }
 
     private void PatrolUpdate() 
     { 
